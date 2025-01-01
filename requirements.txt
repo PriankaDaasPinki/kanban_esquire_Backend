@@ -1,0 +1,15 @@
+fastapi[all]
+#sqlalchemy
+#psycopg2-binary
+fastapi-users
+bcrypt==3.2.0
+itsdangerous
+python-jose
+passlib
+
+
+
+# fastapi
+# uvicorn
+# python-jose
+# passlib
