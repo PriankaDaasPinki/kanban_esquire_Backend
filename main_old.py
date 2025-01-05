@@ -147,20 +147,6 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 #             raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.on_event("startup")
-async def startup():
-    try:
-        app.state.db = await asyncpg.create_pool(DATABASE_URL)
-        print("Database connection successful!")
-    except Exception as e:
-        print(f"Error: {e}")
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    await app.state.db.close()
-
-
 # Handle file uploads asynchronously
 async def save_file(file: UploadFile) -> str:
     if file:

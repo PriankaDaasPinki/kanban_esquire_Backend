@@ -1,0 +1,67 @@
+@project_router.post("/projects", status_code=status.HTTP_201_CREATED,  response_model=None)
+async def create_project(
+    new_project: Project, db: Session = Depends(get_db)
+) -> Project:
+    print(new_project.dict())
+    return {"status": "success", "projects": "create_projects"}
+
+
+
+
+class Project(Base):
+    __tablename__ = "projects"
+
+    project_id = Column(Integer, nullable=False, primary_key=True, index=True)
+    project_name = Column(String, nullable=False, index=True)
+    description = Column(Text, index=True)
+    owner_id = Column(Integer, ForeignKey("users.user_id"), index=True)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"), index=True)
+
+    def __repr__(self):
+        return f"<Project(project_id={self.project_id}, project_name='{self.project_name}')>"
+
+
+
+
+
+Solution:
+
+Create a Pydantic Model for Project
+---------------------------------------------------
+
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
+
+class ProjectSchema(BaseModel):
+    project_id: Optional[int]  # Optional because it is auto-generated
+    project_name: str
+    description: Optional[str]
+    owner_id: int
+    created_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True  # Allows SQLAlchemy objects to be converted to Pydantic
+
+
+
+Update Your Route
+-----------------------------------
+from fastapi import APIRouter, Depends, status
+from sqlalchemy.orm import Session
+from app.models import Project
+from app.schemas import ProjectSchema  # Import your Pydantic model
+from app.database import get_db  # Assuming you have a database dependency
+
+project_router = APIRouter()
+
+@project_router.post("/projects", status_code=status.HTTP_201_CREATED, response_model=ProjectSchema)
+async def create_project(new_project: ProjectSchema, db: Session = Depends(get_db)) -> ProjectSchema:
+    # Convert Pydantic model to SQLAlchemy model
+    project = Project(**new_project.dict())
+    db.add(project)
+    db.commit()
+    db.refresh(project)  # Refresh to get the auto-generated fields like `project_id`
+
+    return project
+

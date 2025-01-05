@@ -10,6 +10,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
 
+
+
+
 # Fake user database
 fake_users_db = {
     "johndoe": {
