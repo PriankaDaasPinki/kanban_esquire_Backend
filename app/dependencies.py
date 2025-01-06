@@ -3,7 +3,7 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
-from app.models import UserInDB, User
+from app.schemas import UserInDB, User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

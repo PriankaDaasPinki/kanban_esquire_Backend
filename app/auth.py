@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import timedelta, datetime
 from jose import JWTError, jwt
-from app.models import Token, UserInDB
+from app.schemas import Token, UserInDB
 from app.dependencies import get_user, authenticate_user, create_access_token
 
 auth_router = APIRouter()
