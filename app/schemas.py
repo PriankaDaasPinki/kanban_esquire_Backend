@@ -26,3 +26,12 @@ class ProjectCreate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class ProjectUpdate(BaseModel):
+    project_name: Optional[str] = Field(None, title="Project Name", max_length=255)
+    description: Optional[str] = Field(None, title="Project Description")
+    owner_id: Optional[int] = Field(None, title="Owner ID")
+
+    class Config:
+        orm_mode = True

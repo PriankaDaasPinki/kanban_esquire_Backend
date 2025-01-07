@@ -13,7 +13,7 @@ async def read_current_user(current_user: User = Depends(get_current_active_user
     return current_user
 
 
-@users_router.get("/")
+@users_router.get("/list", response_model=None)
 async def list_users(db: Session = Depends(get_db)):
     try:
         All_Users = db.query(User).all()
@@ -23,5 +23,4 @@ async def list_users(db: Session = Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error fetching Users.",
         )
-    # return [{"username": "johndoe", "full_name": "John Doe"}]
 
