@@ -2,7 +2,7 @@
 # from pydantic import BaseModel
 # from datetime import datetime
 # from typing import Optional
-from sqlalchemy import Column, Integer, Text, ForeignKey, DateTime, TIMESTAMP, text
+from sqlalchemy import Column, Integer, Text, ForeignKey, TIMESTAMP, text, LargeBinary
 from sqlalchemy.types import String
 from .database import Base
 
@@ -11,8 +11,19 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, index=True)
-    email = Column(String, index=True)
+    username = Column(String(50), nullable=False, unique=True, index=True)
+    first_name = Column(String(50), nullable=False, server_default='', index=True)
+    last_name = Column(String(50), nullable=False, server_default='', index=True)
+    email = Column(String(100), nullable=False, unique=True, index=True)
+    phone = Column(String(15), nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)
+    designation = Column(String(100), index=True)
+    user_image = Column(
+        LargeBinary, index=True
+    )  # For image binary data, use LargeBinary
+    created_at = Column(
+        TIMESTAMP(timezone=True), server_default=text("now()"), index=True
+    )
 
     def __repr__(self):
         return f"<User(user_id={self.user_id}, username='{self.username}')>"
