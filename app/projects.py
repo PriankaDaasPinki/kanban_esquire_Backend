@@ -50,7 +50,7 @@ async def delete_project(id: int, db: Session = Depends(get_db)):
         db.delete(project.first())
         db.commit()
         return {
-            "status": "successfully deleted project with id {delete_project.project_id}",
+            "status": f"successfully deleted project with id {delete_project.project_id}",
             "Project": delete_project,
             "message": f"Project {delete_project.project_name} is deleted.",
         }

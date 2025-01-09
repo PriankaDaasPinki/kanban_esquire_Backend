@@ -1,0 +1,136 @@
+# app/users.py
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from passlib.context import CryptContext
+import base64
+
+from app.models import User
+from app.schemas import UserCreate
+from app.dependencies import get_current_active_user
+from app.database import get_db
+
+users_router = APIRouter()
+
+# Password hashing utility
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+@users_router.get("/me", response_model=None)
+async def read_current_user(current_user: User = Depends(get_current_active_user)):
+    return current_user
+
+
+@users_router.get("/list", response_model=None)
+async def list_users(db: Session = Depends(get_db)):
+    try:
+        All_Users = db.query(User).all()
+        return {"status": "success", "Users": All_Users}
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error fetching Users.",
+        )
+
+
+@users_router.post("/create", status_code=status.HTTP_201_CREATED, response_model=None)
+async def create_user(new_user: UserCreate, db: Session = Depends(get_db)) -> dict:
+    print(new_user.dict())
+
+    # Process user image
+    user_image_binary = None
+    if new_user.user_image:
+        try:
+            # Read the binary content of the uploaded file
+            user_image_binary = await new_user.user_image.read()
+        except Exception as e:
+            raise HTTPException(status_code=400, detail="Failed to process user image")
+
+
+    # Encode the binary data in Base64
+    user_image_base64 = None
+    if user_image_binary:
+        user_image_base64 = base64.b64encode(user_image_binary).decode("utf-8")
+
+        # Hash the password
+        hashed_password = hash_password(new_user.password)
+
+    # Remove `user_image` and `password` from the dictionary since they need preprocessing
+    user_data = new_user.dict(exclude={"user_image", "password"})
+
+    # Create the User instance
+    # Create the User instance
+    user = User(
+        **user_data,
+        password_hash=hashed_password,
+        user_image=user_image_binary,  # Store the binary content in the database
+    )
+
+    # user = User(**new_user.dict())
+
+    # Save the user in the database
+    db.add(user)
+    db.commit()
+    db.refresh(user)  # Refresh to get the auto-generated fields like `project_id`
+    # Return a success response without sensitive data
+    return {
+        "status": "User created successfully!",
+        "user": {
+            "user_id": user.user_id,
+            "username": user.username,
+            "email": user.email,
+            "phone": user.phone,
+            "designation": user.designation,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        },
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.post("/create_user")
+async def create_user(
+    # Form fields
+    username: str = Form(...),
+    email: EmailStr = Form(...),
+    phone: str = Form(...),
+    password_hash: str = Form(...),
+    designation: Optional[str] = Form(None),
+    user_image: Optional[Union[UploadFile, str]] = File(None),
+    first_name: Optional[str] = Form(None),
+    last_name: Optional[str] = Form(None),
+    # JSON Body
+    user_data: Optional[UserCreate] = Body(None)
+):
+    if user_data:
+        # Process raw JSON body
+        user_data_dict = user_data.dict()
+        if user_image:
+            if isinstance(user_image, UploadFile):
+                user_data_dict["user_image"] = user_image.filename  # Handle file saving
+            else:
+                user_data_dict["user_image"] = user_image  # If it's a URL
+
+    # Insert into the database
+    db = SessionLocal()  # Assuming SessionLocal is your SQLAlchemy session
+    new_user = User(**user_data_dict)  # Create new User instance
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)  # Refresh to get any auto-generated fields (like ID)
+
+    return {"status": "success", "user": user_data_dict}
