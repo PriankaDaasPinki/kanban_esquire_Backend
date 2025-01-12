@@ -6,16 +6,16 @@ import base64
 
 from app.models import User
 from app.schemas import UserCreate, UserUpdate
-from app.dependencies import get_current_active_user
+# from app.dependencies import get_current_active_user
 from app.database import get_db
 from app.utils import hash_password
 
 users_router = APIRouter()
 
 
-@users_router.get("/me", response_model=None)
-async def read_current_user(current_user: User = Depends(get_current_active_user)):
-    return current_user
+# @users_router.get("/me", response_model=None)
+# async def read_current_user(current_user: User = Depends(get_current_active_user)):
+#     return current_user
 
 
 @users_router.get("/list", response_model=None)
