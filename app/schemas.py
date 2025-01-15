@@ -2,21 +2,9 @@ from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from fastapi import UploadFile, File
 
-
-class User(BaseModel):
-    username: str = Field(..., title="Username", min_length=3, max_length=50)
-    email: Optional[EmailStr] = Field(None, title="Email Address")
-    full_name: Optional[str] = Field(None, title="Full Name", max_length=100)
-    disabled: Optional[bool] = Field(False, title="Is User Disabled")
-
-
-class UserInDB(User):
-    hashed_password: str = Field(..., title="Hashed Password")
-
-
-# class UserLogin(BaseModel):
-#     username_or_email: str = Field(..., title="Username or Email", max_length=50)
-#     password: str = Field(..., title="User Password", min_length=8, max_length=255)
+class UserLogin(BaseModel):
+    username_or_email: str = Field(..., title="Username or Email", max_length=50)
+    password: str = Field(..., title="User Password", min_length=8, max_length=255)
 
 
 class Token(BaseModel):

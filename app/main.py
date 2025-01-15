@@ -19,5 +19,5 @@ app.include_router(project_router, prefix="/projects", tags=["Projects"])
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to the FastAPI Authentication Project"}
+    return {"message": "Welcome to the FastAPI KANBAN Project"}
 

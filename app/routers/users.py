@@ -8,7 +8,7 @@ from app.models import User
 from app.schemas import UserCreate, UserUpdate
 # from app.dependencies import get_current_active_user
 from app.database import get_db
-from app.utils import hash_password
+from app.dependencies import hash_password
 
 users_router = APIRouter()
 
