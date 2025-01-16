@@ -134,3 +134,27 @@ async def create_user(
     db.refresh(new_user)  # Refresh to get any auto-generated fields (like ID)
 
     return {"status": "success", "user": user_data_dict}
+
+
+
+
+
+
+
+
+
+
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# Dependency to validate the token
+def verify_token(token: str = Depends(oauth2_scheme)):
+    # Replace this with your token validation logic
+    if token != "expected_token":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return token

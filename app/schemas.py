@@ -3,13 +3,19 @@ from typing import Optional
 from fastapi import UploadFile, File
 
 class UserLogin(BaseModel):
-    username_or_email: str = Field(..., title="Username or Email", max_length=50)
+    username: str = Field(..., title="Username or Email", max_length=50)
     password: str = Field(..., title="User Password", min_length=8, max_length=255)
 
 
 class Token(BaseModel):
     access_token: str = Field(..., title="Access Token")
     token_type: str = Field(..., title="Token Type", example="bearer")
+
+class TokenData(BaseModel):
+    username: Optional[str] = Field(None, title="Username")
+
+    class Config:
+        orm_mode = True
 
 
 # Users schemas
