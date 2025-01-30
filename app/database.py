@@ -5,9 +5,9 @@ from sqlalchemy.orm import sessionmaker
 
 
 DATABASE_URL = "postgresql+psycopg2://postgres:admin@localhost:5432/kanban_esquire"
-SECRET_KEY = "your-secret-key"  # Replace with a secure secret key
-ALGORITHM = "HS256"
-TOKEN_EXPIRE_MINUTES = 30
+# SECRET_KEY = "your-secret-key"  # Replace with a secure secret key
+# ALGORITHM = "HS256"
+# TOKEN_EXPIRE_MINUTES = 30
 
 engine = create_engine(DATABASE_URL)
 

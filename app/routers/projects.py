@@ -14,11 +14,12 @@ project_router = APIRouter()
 async def list_projects(db: Session = Depends(get_db)):
     try:
         view_projects = db.query(Project).all()
+        print("view_projects", view_projects)
         return {"status": "success", "projects": view_projects}
     except SQLAlchemyError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error fetching projects - {e}",
+            detail=f"Error fetching projects - {e}",
         )
 
 
@@ -31,6 +32,7 @@ async def project_details(id: int, db: Session = Depends(get_db)) -> Project:
             "projects": project_details or f"Project with id {id} is not found.",
         }
     except SQLAlchemyError as e:
+        print('e',e)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Error fetching the project - {e}",
