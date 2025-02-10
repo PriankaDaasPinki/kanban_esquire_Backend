@@ -1,11 +1,12 @@
 # app/main.py
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.routers.auth import auth_router
 from app.routers.users import users_router
 from . import models
 from app.database import engine
 from app.routers.projects import project_router
-from fastapi.middleware.cors import CORSMiddleware
+from app.routers.project_module import project_module_router
 # import uvicorn
 
 models.Base.metadata.create_all(bind=engine)
@@ -35,6 +36,7 @@ allowed_origins = [
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(users_router, prefix="/users", tags=["Users"])
 app.include_router(project_router, prefix="/projects", tags=["Projects"])
+app.include_router(project_module_router, prefix="/project_module", tags=["Project Module"])
 
 
 @app.get("/")
