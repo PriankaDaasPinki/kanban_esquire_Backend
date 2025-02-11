@@ -70,3 +70,21 @@ class ProjectUpdate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+
+
+
+
+
+
+
+# Module Schemas
+class ProjectModuleCreate(BaseModel):
+    module_name: str = Field(..., title="Project Module Name", max_length=255)
+    description: Optional[str] = Field(None, title="Project Module Description")
+    project_id: int = Field(..., title="Project ID")
+    created_by: int = Field(..., title="Owner ID")
+
+    class Config:
+        orm_mode = True
