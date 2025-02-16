@@ -7,6 +7,7 @@ from . import models
 from app.database import engine
 from app.routers.projects import project_router
 from app.routers.project_module import project_module_router
+from app.routers.tasks import task_router
 # import uvicorn
 
 models.Base.metadata.create_all(bind=engine)
@@ -36,7 +37,8 @@ allowed_origins = [
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(users_router, prefix="/users", tags=["Users"])
 app.include_router(project_router, prefix="/projects", tags=["Projects"])
-app.include_router(project_module_router, prefix="/project_module", tags=["Project Module"])
+app.include_router(project_module_router, prefix="/project_module", tags=["Project Modules"])
+app.include_router(task_router, prefix="/tasks", tags=["Tasks"])
 
 
 @app.get("/")

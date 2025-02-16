@@ -22,7 +22,7 @@ Base = declarative_base()
 try:
     # Establish a test connection
     with engine.connect() as connection:
-        print("Database connected Successfully!")
+        print("============================================= Database connected Successfully! =============================================")
 except OperationalError as e:
     print(f"Database connection failed: {e}")
 

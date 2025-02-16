@@ -49,7 +49,7 @@ async def delete_module(id: int, db: Session = Depends(get_db)):
         if module.first() == None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Project with id {id} does not exit.",
+                detail=f"Module with id {id} does not exit.",
             )
         delete_module = module.first()
         db.delete(module.first())
@@ -57,12 +57,12 @@ async def delete_module(id: int, db: Session = Depends(get_db)):
         return {
             "status": f"successfully deleted project module with id {delete_module.module_id}",
             "Project Module": delete_module,
-            "message": f"Project {delete_module.module_name} is deleted.",
+            "message": f"Module {delete_module.module_name} is deleted.",
         }
     except SQLAlchemyError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error fetching the project - {e}",
+            detail=f"Error fetching the module - {e}",
         )
 
 
